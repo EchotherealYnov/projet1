@@ -6,6 +6,7 @@ pipeline {
         string(name: 'IMAGE_TAG', defaultValue: 'latest', description: 'Tag de l\'image Docker')
         string(name: 'VOTRE_ID_GIT', defaultValue: 'EchotherealYnov', description: 'Votre ID Git')
         string(name: 'DOCKERHUB_ID', defaultValue: 'echotherealynov', description: 'Votre ID Docker Hub')
+        string(name: 'DOCKERHUB_CREDENTIALS', description: 'Nom des informations d\'identification Docker Hub')
     }
 
     stages {
@@ -50,9 +51,12 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    // Pousser l'image Docker vers Docker Hub
-                    docker.withRegistry('https://index.docker.io/v2/', '019a007c-cd12-44ff-8479-6e8c9c7ba103') {
-                        docker.image("${params.DOCKERHUB_ID}/${params.IMAGE_NAME}:${params.IMAGE_TAG}").push()
+            withCredentials([usernamePassword(credentialsId: params.DOCKERHUB_CREDENTIALS, usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                sh """
+                    docker login -u \$DOCKERHUB_USERNAME -p \$DOCKERHUB_PASSWORD
+                    docker tag ${params.DOCKERHUB_ID}/${params.IMAGE_NAME}:${params.IMAGE_TAG} ${params.DOCKERHUB_ID}/${params.IMAGE_NAME}:${params.IMAGE_TAG}
+                    docker push ${params.DOCKERHUB_ID}/${params.IMAGE_NAME}:${params.IMAGE_TAG}
+                """
                     }
                 }
             }
