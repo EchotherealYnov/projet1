@@ -21,9 +21,10 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Exécution du conteneur Docker
-                    docker.run("--name ${params.IMAGE_NAME}_container -p 80:5000 -e PORT=5000 -d ${params.DOCKERHUB_ID}/${params.IMAGE_NAME}:${params.IMAGE_TAG}")
-                    sleep(5)
+            // Exécution du conteneur Docker
+                docker.image("${params.DOCKERHUB_ID}/${params.IMAGE_NAME}:${params.IMAGE_TAG}")
+                    .withRun("--name ${params.IMAGE_NAME}_container -p 80:5000 -e PORT=5000 -d")
+                sleep(5)
                 }
             }
         }
