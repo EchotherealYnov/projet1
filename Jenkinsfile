@@ -37,11 +37,11 @@ pipeline {
 
         stage('Execute Script Shell') {
             steps {
-                script {
-                    // Arrêt et suppression du conteneur Docker
-                    docker.stop("${params.IMAGE_NAME}_container")
-                    docker.rm("${params.IMAGE_NAME}_container")
-                }
+        script {
+            // Arrêt et suppression du conteneur Docker
+            docker.container("${params.IMAGE_NAME}_container").stop()
+            docker.container("${params.IMAGE_NAME}_container").remove(force: true)
+        }
             }
         }
 
