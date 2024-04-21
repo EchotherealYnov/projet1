@@ -40,8 +40,8 @@ pipeline {
         script {
             // Arrêt et suppression du conteneur Docker
             sh '''
-                docker stop $IMAGE_NAME\_container
-                docker rm $IMAGE_NAME\_container
+                docker stop $IMAGE_NAME_container
+                docker rm $IMAGE_NAME_container
             '''
         }
             }
